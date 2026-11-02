@@ -3,18 +3,10 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
-import { ArrowRight, Heart, Menu, Search, ShoppingBag, X } from "lucide-react";
+import { ArrowRight, Heart, Menu, Search, ShoppingBag, UserRound, X } from "lucide-react";
 import { Instagram } from "@/components/instagram-icon";
 import { useStore } from "@/context/store-context";
-
-const links = [
-  { label: "НОВО", href: "/shop?filter=new" },
-  { label: "ВСИЧКИ", href: "/shop" },
-  { label: "ДРЕХИ", href: "/shop?category=clothing" },
-  { label: "КОРСЕТИ", href: "/shop?category=corsets" },
-  { label: "АКСЕСОАРИ", href: "/shop?category=accessories" },
-  { label: "ОЧИЛА", href: "/shop?category=eyewear" },
-];
+import { useCommerceCatalog } from "@/hooks/use-commerce-content";
 
 export function Header() {
   const { count, setCartOpen, favoriteIds } = useStore();
@@ -22,6 +14,12 @@ export function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [search, setSearch] = useState("");
   const router = useRouter();
+  const { categories } = useCommerceCatalog();
+  const links = [
+    { label: "НОВО", href: "/shop?filter=new" },
+    { label: "ВСИЧКИ", href: "/shop" },
+    ...categories.filter((item) => item.active).map((item) => ({ label: item.name.toLocaleUpperCase("bg"), href: "/shop?category=" + encodeURIComponent(item.id) })),
+  ];
   const onSearch = (e: FormEvent) => {
     e.preventDefault();
     router.push(`/shop?q=${encodeURIComponent(search.trim())}`);
@@ -43,6 +41,7 @@ export function Header() {
           <div className="flex min-w-[70px] justify-end gap-[18px] sm:min-w-[140px] sm:gap-6">
             <button className="lg:hidden" aria-label="Търси" onClick={() => setSearchOpen((v) => !v)}><Search size={20} strokeWidth={1.4}/></button>
             <Link href="/shop?filter=favorites" className="relative hidden sm:block" aria-label="Любими"><Heart size={20} strokeWidth={1.4}/>{favoriteIds.length > 0 && <span className="absolute -right-2 -top-2 rounded-full bg-black px-1.5 text-[9px] text-white">{favoriteIds.length}</span>}</Link>
+            <Link href="/account" className="hidden sm:block" aria-label="Моят профил"><UserRound size={20} strokeWidth={1.4}/></Link>
             <button className="relative" aria-label="Количка" onClick={() => setCartOpen(true)}><ShoppingBag size={21} strokeWidth={1.45}/>{count > 0 && <span className="absolute -right-2 -top-2 flex h-[16px] min-w-[16px] items-center justify-center rounded-full bg-[#2e2a27] px-0.5 text-[9px] text-white">{count}</span>}</button>
           </div>
         </div>
@@ -51,7 +50,7 @@ export function Header() {
         </nav>
         {searchOpen && <form onSubmit={onSearch} className="absolute left-0 right-0 top-full z-50 flex items-center gap-4 border-b border-black/10 bg-[#fcfbf8] px-6 py-5 shadow-md sm:px-16"><Search size={18}/><input autoFocus value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Потърсете в колекцията..." className="w-full bg-transparent text-sm outline-none"/><button type="submit" aria-label="Търси"><ArrowRight size={20}/></button><button type="button" onClick={() => setSearchOpen(false)} aria-label="Затвори"><X size={20}/></button></form>}
       </header>
-      {menuOpen && <div className="fixed inset-0 z-[80] lg:hidden" role="dialog" aria-modal="true" aria-label="Меню"><button className="absolute inset-0 bg-black/45" onClick={() => setMenuOpen(false)} aria-label="Затвори менюто"/><aside className="absolute left-0 top-0 flex h-full w-[86%] max-w-[350px] flex-col bg-[#fcfbf8] p-7"><div className="flex items-center justify-between"><span className="brand-wordmark brand-wordmark--menu">VALÉRE</span><button onClick={() => setMenuOpen(false)} aria-label="Затвори"><X/></button></div><div className="mt-12 flex flex-col gap-7">{links.map((link) => <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)} className="text-sm tracking-[.16em]">{link.label}</Link>)}</div><a className="mt-auto flex items-center gap-2 text-xs tracking-wider" href="https://www.instagram.com/valere.concept_/" target="_blank" rel="noreferrer"><Instagram size={18}/> FOLLOW ON INSTAGRAM</a></aside></div>}
+      {menuOpen && <div className="fixed inset-0 z-[80] lg:hidden" role="dialog" aria-modal="true" aria-label="Меню"><button className="absolute inset-0 bg-black/45" onClick={() => setMenuOpen(false)} aria-label="Затвори менюто"/><aside className="absolute left-0 top-0 flex h-full w-[86%] max-w-[350px] flex-col bg-[#fcfbf8] p-7"><div className="flex items-center justify-between"><span className="brand-wordmark brand-wordmark--menu">VALÉRE</span><button onClick={() => setMenuOpen(false)} aria-label="Затвори"><X/></button></div><div className="mt-12 flex flex-col gap-7">{links.map((link) => <Link key={link.href} href={link.href} onClick={() => setMenuOpen(false)} className="text-sm tracking-[.16em]">{link.label}</Link>)}</div><Link href="/account" onClick={() => setMenuOpen(false)} className="mt-8 flex items-center gap-3 text-xs tracking-wider"><UserRound size={18}/> МОЯТ ПРОФИЛ</Link><a className="mt-auto flex items-center gap-2 text-xs tracking-wider" href="https://www.instagram.com/valere.concept_/" target="_blank" rel="noreferrer"><Instagram size={18}/> FOLLOW ON INSTAGRAM</a></aside></div>}
     </>
   );
 }
