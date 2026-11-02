@@ -1,15 +1,14 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Manrope } from "next/font/google";
+import { Prata, Manrope } from "next/font/google";
 import "./globals.css";
 import { StoreProvider } from "@/context/store-context";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { CartDrawer } from "@/components/cart-drawer";
 
-const displayFont = Cormorant_Garamond({
+const displayFont = Prata({
   subsets: ["latin", "cyrillic"],
-  weight: ["400", "500", "600"],
-  style: ["normal", "italic"],
+  weight: "400",
   variable: "--font-valere-display",
   display: "swap",
 });

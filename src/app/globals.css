@@ -20,11 +20,11 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 @media (min-width: 640px) { .section-wrap { padding-left: 44px; padding-right: 44px; } }
 @media (min-width: 1024px) { .section-wrap { padding-left: 64px; padding-right: 64px; } }
 
-.display-serif { font-family: var(--font-valere-display), "Iowan Old Style", Georgia, serif; font-weight: 500; letter-spacing: -.036em; }
-.brand-wordmark { font-family: var(--font-valere-display), "Iowan Old Style", Georgia, serif; font-size: clamp(2.55rem, 3.8vw, 3.45rem); font-weight: 600; letter-spacing: .11em; line-height: 1; white-space: nowrap; }
-.brand-wordmark--menu { font-size: 2.45rem; }
-.brand-wordmark--footer { font-size: clamp(3.4rem, 5vw, 4.4rem); }
-@media (max-width: 360px) { .brand-wordmark { font-size: 2.25rem; letter-spacing: .085em; } }
+.display-serif { font-family: var(--font-valere-display), Georgia, serif; font-weight: 400; letter-spacing: -.034em; }
+.brand-wordmark { font-family: var(--font-valere-body), Arial, sans-serif; font-size: clamp(1.7rem, 3vw, 2.3rem); font-weight: 500; letter-spacing: .19em; line-height: 1.15; white-space: nowrap; }
+.brand-wordmark--menu { font-size: 1.85rem; }
+.brand-wordmark--footer { font-size: clamp(2.1rem, 4vw, 3rem); }
+@media (max-width: 360px) { .brand-wordmark { font-size: 1.62rem; letter-spacing: .15em; } }
 .display-serif em { font-weight: 400; font-style: italic; }
 .font-serif { font-family: var(--font-valere-display), "Iowan Old Style", Georgia, serif; }
 .eyebrow { font-size: 11px; font-weight: 500; letter-spacing: .21em; text-transform: uppercase; }
