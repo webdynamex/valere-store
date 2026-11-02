@@ -146,3 +146,12 @@ Customers can register and sign in at `/account`, edit their own contact informa
 Set up Firebase Authentication → Email/Password and add `valere-store.vercel.app` in **Authentication → Settings → Authorized domains** if it is not already present. For any new admin, add `admins/{authUid}` manually via Firebase Console; users cannot grant themselves admin access. Never put Firebase service account private keys in the browser or GitHub repository.
 
 Not yet implemented in this phase: staff invitations/multiple admin roles, discount redemption, carrier-label integrations and live delivery quotes, refunds, transactional emails, legal-policy content and publishing, card payments, verified payment reports, customer data export/deletion workflow, audit logs and production-grade fraud controls. The customer login and admin tabs are a functional foundation, not a promise that live checkout is ready.
+
+
+## VALÉRE Journal и ценови варианти
+
+- **Admin → Продукти**: всяка комбинация цвят/размер може да има своя продажна цена, стара цена, SKU, наличност и снимка. Празната цена използва основната цена на продукта. Показването в магазина и стойностите в количката използват избрания вариант. Сървърът изчислява отново цената от Firestore при създаване на поръчка.
+- **Admin → Блог**: статии с чернови/публикуване, категория, тагове, заглавие, откъс, основна снимка, снимки в текста, Markdown редактор с визуализация. Публично се виждат само `published` статии в `/blog` и `/blog/[slug]`; началната страница показва последни статии, ако има такива.
+- **Задължително**: публикувайте актуалните `firestore.rules` във Firebase Console; добавени са правила за `blogPosts` (публично само публикувани, редакция само от администратор). Storage вече допуска `editorial/`, използван и за снимките в блога.
+- Публичните блог страници са клиентски зареждани от Firestore; `document.title` се обновява на клиента. За пълен SSR OpenGraph/SEO с уникални метатагове за всяка статия е нужен допълнителен сървърен механизъм.
+- Реалните поръчки остават изключени до завършване на търговските, правните, куриерските и имейл процесите.

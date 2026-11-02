@@ -4,9 +4,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { ArrowRight, Heart, Menu, Search, ShoppingBag, UserRound, X } from "lucide-react";
-import { Instagram } from "@/components/instagram-icon";
 import { useStore } from "@/context/store-context";
 import { useCommerceCatalog } from "@/hooks/use-commerce-content";
+import { Instagram } from "@/components/instagram-icon";
 
 export function Header() {
   const { count, setCartOpen, favoriteIds } = useStore();
@@ -19,6 +19,7 @@ export function Header() {
     { label: "НОВО", href: "/shop?filter=new" },
     { label: "ВСИЧКИ", href: "/shop" },
     ...categories.filter((item) => item.active).map((item) => ({ label: item.name.toLocaleUpperCase("bg"), href: "/shop?category=" + encodeURIComponent(item.id) })),
+    { label: "ЖУРНАЛ", href: "/blog" },
   ];
   const onSearch = (e: FormEvent) => {
     e.preventDefault();

@@ -7,6 +7,7 @@ import { useCommerceCatalog } from "@/hooks/use-commerce-content";
 import { useProducts } from "@/hooks/use-products";
 import { useStore } from "@/context/store-context";
 import { ProductCard } from "@/components/product-card";
+import { productPriceSummary } from "@/lib/pricing";
 
 export function ShopContent() {
   const params = useSearchParams();
@@ -30,8 +31,8 @@ export function ShopContent() {
     let result = products.filter((item) => (category === "all" || item.category === category) && (!collectionId || (collections.find((c) => c.id === collectionId && c.published)?.productIds || []).includes(item.id)) && (!search || `${item.name} ${item.description}`.toLocaleLowerCase("bg").includes(search.toLocaleLowerCase("bg"))));
     if (filter === "new") result = result.filter((item) => item.isNew);
     if (filter === "favorites") result = result.filter((item) => favoriteIds.includes(item.id));
-    if (sort === "price-asc") result = [...result].sort((a, b) => a.priceCents - b.priceCents);
-    if (sort === "price-desc") result = [...result].sort((a, b) => b.priceCents - a.priceCents);
+    if (sort === "price-asc") result = [...result].sort((a, b) => productPriceSummary(a).from - productPriceSummary(b).from);
+    if (sort === "price-desc") result = [...result].sort((a, b) => productPriceSummary(b).from - productPriceSummary(a).from);
     if (sort === "name") result = [...result].sort((a, b) => a.name.localeCompare(b.name));
     return result;
   }, [products, category, collectionId, collections, filter, favoriteIds, search, sort]);

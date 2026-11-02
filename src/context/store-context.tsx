@@ -3,6 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { CartLine, Product, Variant } from "@/types/store";
 import { isDemoProduct } from "@/lib/demo-products";
+import { variantPriceCents } from "@/lib/pricing";
 
 const STORAGE_CART = "valere-cart-v1";
 const STORAGE_FAVORITES = "valere-favorites-v1";
@@ -45,10 +46,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     const key = `${product.id}::${variant.key}`;
     setCart((current) => {
       const existing = current.find((line) => line.key === key);
-      if (existing) return current.map((line) => line.key === key ? { ...line, quantity: Math.min(line.quantity + 1, variant.stock) } : line);
+      if (existing) return current.map((line) => line.key === key ? { ...line, priceCents: variantPriceCents(product, variant), quantity: Math.min(line.quantity + 1, variant.stock) } : line);
       return [...current, {
         key, productId: product.id, slug: product.slug, name: product.name,
-        image: product.images[0] || "", priceCents: product.priceCents,
+        image: product.images[0] || "", priceCents: variantPriceCents(product, variant),
         color: variant.color, size: variant.size, variantKey: variant.key,
         quantity: 1, isDemo: isDemoProduct(product.id),
       }];

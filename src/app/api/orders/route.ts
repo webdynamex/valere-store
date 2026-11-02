@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { FieldValue } from "firebase-admin/firestore";
 import { getAdminAuth, getAdminDb } from "@/lib/firebase-admin";
 import type { Product, Variant } from "@/types/store";
+import { variantPriceCents } from "@/lib/pricing";
 
 export const runtime = "nodejs";
 
@@ -86,9 +87,11 @@ export async function POST(request: NextRequest) {
         for (const line of byProduct.get(snapshot.id) ?? []) {
           const matching = variants.find((variant) => variant.key === line.variantKey);
           if (!matching || matching.stock < line.quantity) throw new Error(`Недостатъчна наличност за ${product.name}.`);
+          const unitPrice = variantPriceCents(product, matching);
+          if (!Number.isSafeInteger(unitPrice) || unitPrice <= 0 || unitPrice > 100000000) throw new Error("Невалидна цена за избрания вариант.");
           matching.stock -= line.quantity;
-          subtotalCents += product.priceCents * line.quantity;
-          orderLines.push({ productId: snapshot.id, variantKey: matching.key, name: product.name, color: matching.color, size: matching.size, quantity: line.quantity, priceCents: product.priceCents });
+          subtotalCents += unitPrice * line.quantity;
+          orderLines.push({ productId: snapshot.id, variantKey: matching.key, name: product.name, color: matching.color, size: matching.size, quantity: line.quantity, priceCents: unitPrice });
         }
         updates.push({ ref: refs[i], variants });
       }

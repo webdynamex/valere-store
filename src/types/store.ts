@@ -7,6 +7,9 @@ export type Variant = {
   size: string;
   stock: number;
   sku?: string;
+  priceCents?: number;
+  compareAtCents?: number;
+  image?: string;
 };
 
 export type Product = {

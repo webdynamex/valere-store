@@ -6,11 +6,13 @@ import { ArrowUpRight, Heart } from "lucide-react";
 import type { Product } from "@/types/store";
 import { formatPrice, productTotalStock } from "@/lib/constants";
 import { useStore } from "@/context/store-context";
+import { productPriceSummary } from "@/lib/pricing";
 
 export function ProductCard({ product }: { product: Product }) {
   const { favoriteIds, toggleFavorite } = useStore();
   const saved = favoriteIds.includes(product.id);
   const soldOut = productTotalStock(product.variants) === 0;
+  const price = productPriceSummary(product);
   return (
     <div className="group min-w-0">
       <div className="relative overflow-hidden bg-[#eae6e0]">
@@ -19,10 +21,10 @@ export function ProductCard({ product }: { product: Product }) {
         {product.images[1] && <Image src={product.images[1]} alt={`${product.name} детайл`} fill unoptimized className="object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100" sizes="(max-width: 640px) 50vw, 25vw"/>}
         <div className="absolute bottom-4 right-4 hidden h-10 w-10 items-center justify-center rounded-full bg-white/90 transition-transform group-hover:scale-105 sm:flex"><ArrowUpRight size={18} strokeWidth={1.3}/></div>
       </Link>
-        <div className="absolute left-3 top-3 flex flex-col gap-2">{soldOut ? <span className="product-chip">ИЗЧЕРПАНО</span> : product.isNew ? <span className="product-chip">NEW</span> : product.compareAtCents ? <span className="product-chip">SPECIAL PRICE</span> : null}</div>
+        <div className="absolute left-3 top-3 flex flex-col gap-2">{soldOut ? <span className="product-chip">ИЗЧЕРПАНО</span> : product.isNew ? <span className="product-chip">NEW</span> : price.discounted ? <span className="product-chip">SPECIAL PRICE</span> : null}</div>
         <button onClick={() => toggleFavorite(product.id)} aria-label={saved ? "Премахни от любими" : "Добави в любими"} className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/85 hover:bg-white"><Heart size={18} fill={saved ? "#262522" : "none"} strokeWidth={1.3}/></button>
       </div>
-      <div className="pt-4 text-center sm:pt-5"><Link href={`/product/${product.slug}`} className="block text-[11px] font-medium tracking-[.09em] sm:text-[13px]">{product.name}</Link><p className="mt-1 text-[11px] text-neutral-500">{product.subtitle || "VALÉRE Collection"}</p><div className="mt-2 flex justify-center gap-3 text-xs sm:text-sm"><span>{formatPrice(product.priceCents)}</span>{product.compareAtCents && <span className="text-neutral-400 line-through">{formatPrice(product.compareAtCents)}</span>}</div></div>
+      <div className="pt-4 text-center sm:pt-5"><Link href={`/product/${product.slug}`} className="block text-[11px] font-medium tracking-[.09em] sm:text-[13px]">{product.name}</Link><p className="mt-1 text-[11px] text-neutral-500">{product.subtitle || "VALÉRE Collection"}</p><div className="mt-2 flex justify-center gap-3 text-xs sm:text-sm"><span>{price.from !== price.to ? "от " : ""}{formatPrice(price.from)}</span>{price.compareAt && <span className="text-neutral-400 line-through">{formatPrice(price.compareAt)}</span>}</div></div>
     </div>
   );
 }

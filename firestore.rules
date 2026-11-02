@@ -45,6 +45,12 @@ service cloud.firestore {
       allow read, write: if isAdmin();
     }
 
+    // Blog drafts are private. Public queries must constrain status == published.
+    match /blogPosts/{postId} {
+      allow get, list: if isAdmin() || resource.data.status == 'published';
+      allow create, update, delete: if isAdmin();
+    }
+
     match /orders/{orderId} {
       // Customer checkout goes through a verified server endpoint.
       allow create, delete: if false;
