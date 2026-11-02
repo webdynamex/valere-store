@@ -9,7 +9,7 @@
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { margin: 0; background: var(--paper); color: var(--ink); font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-valere-body), "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; }
 ::selection { background: #d8c9b9; color: #262522; }
 a, button, input, select, textarea { -webkit-tap-highlight-color: transparent; }
 button, select { cursor: pointer; }
@@ -20,9 +20,13 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 @media (min-width: 640px) { .section-wrap { padding-left: 44px; padding-right: 44px; } }
 @media (min-width: 1024px) { .section-wrap { padding-left: 64px; padding-right: 64px; } }
 
-.display-serif { font-family: "Iowan Old Style", "Baskerville", "Palatino Linotype", "Book Antiqua", Georgia, serif; font-weight: 400; letter-spacing: -.042em; }
-.display-serif em { font-weight: 400; }
-.font-serif { font-family: "Iowan Old Style", "Baskerville", Georgia, serif; }
+.display-serif { font-family: var(--font-valere-display), "Iowan Old Style", Georgia, serif; font-weight: 500; letter-spacing: -.036em; }
+.brand-wordmark { font-family: var(--font-valere-display), "Iowan Old Style", Georgia, serif; font-size: clamp(2.55rem, 3.8vw, 3.45rem); font-weight: 600; letter-spacing: .11em; line-height: 1; white-space: nowrap; }
+.brand-wordmark--menu { font-size: 2.45rem; }
+.brand-wordmark--footer { font-size: clamp(3.4rem, 5vw, 4.4rem); }
+@media (max-width: 360px) { .brand-wordmark { font-size: 2.25rem; letter-spacing: .085em; } }
+.display-serif em { font-weight: 400; font-style: italic; }
+.font-serif { font-family: var(--font-valere-display), "Iowan Old Style", Georgia, serif; }
 .eyebrow { font-size: 11px; font-weight: 500; letter-spacing: .21em; text-transform: uppercase; }
 .nav-link { position: relative; display: inline-block; font-size: 10px; letter-spacing: .14em; color: #3b3935; transition: opacity .18s; }
 .nav-link:hover { opacity: .5; }
