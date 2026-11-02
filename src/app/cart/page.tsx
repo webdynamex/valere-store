@@ -1,0 +1,12 @@
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight, Minus, Plus, Trash2 } from "lucide-react";
+import { useStore } from "@/context/store-context";
+import { formatPrice } from "@/lib/constants";
+
+export default function CartPage() {
+  const { cart, subtotalCents, updateQuantity, removeFromCart } = useStore();
+  return <div className="section-wrap pb-28 pt-20"><p className="eyebrow text-center">YOUR SELECTION</p><h1 className="display-serif mb-14 mt-3 text-center text-[52px]">Shopping <em>bag</em></h1>{!cart.length ? <div className="py-20 text-center"><p className="font-serif text-2xl">Тук все още няма нищо.</p><Link className="btn-dark mt-8" href="/shop">РАЗГЛЕДАЙ КОЛЕКЦИЯТА <ArrowRight size={15}/></Link></div> : <div className="grid gap-14 lg:grid-cols-[1.6fr_.8fr]"><div className="space-y-6">{cart.map((line) => <div key={line.key} className="flex gap-5 border-b border-black/10 pb-6"><Link href={`/product/${line.slug}`} className="relative h-40 w-28 shrink-0 bg-[#e5dfd7]">{line.image && <Image src={line.image} alt={line.name} fill unoptimized className="object-cover"/>}</Link><div className="flex flex-1 flex-col"><Link href={`/product/${line.slug}`} className="text-sm font-medium tracking-[.1em]">{line.name}</Link><span className="mt-2 text-xs text-neutral-500">{line.color} / {line.size}</span><span className="mt-3 text-sm">{formatPrice(line.priceCents)}</span><div className="mt-auto flex items-center justify-between"><div className="inline-flex items-center border border-black/15"><button onClick={() => updateQuantity(line.key, line.quantity - 1)} className="p-2" aria-label="Намали"><Minus size={13}/></button><span className="w-7 text-center text-xs">{line.quantity}</span><button onClick={() => updateQuantity(line.key, line.quantity + 1)} className="p-2" aria-label="Увеличи"><Plus size={13}/></button></div><button onClick={() => removeFromCart(line.key)} aria-label="Премахни"><Trash2 size={17} strokeWidth={1.4}/></button></div></div></div>)}</div><div className="h-fit bg-[#f3efea] p-7"><h2 className="display-serif text-3xl">Summary</h2><div className="mt-8 flex justify-between border-b border-black/10 pb-6 text-sm"><span>Междинна сума</span><span>{formatPrice(subtotalCents)}</span></div><p className="mt-5 text-xs leading-6 text-neutral-500">Цената за доставка не е включена.</p><Link href="/checkout" className="btn-dark mt-7 w-full justify-center">КЪМ ПОРЪЧКА <ArrowRight size={16}/></Link></div></div>}</div>;
+}
