@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
-import { ArrowRight, Heart, Instagram, Menu, Search, ShoppingBag, X } from "lucide-react";
+import { ArrowRight, Heart, Menu, Search, ShoppingBag, X } from "lucide-react";
+import { Instagram } from "@/components/instagram-icon";
 import { useStore } from "@/context/store-context";
 
 const links = [

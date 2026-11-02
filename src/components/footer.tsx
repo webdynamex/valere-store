@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { ArrowUpRight, Instagram } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
+import { Instagram } from "@/components/instagram-icon";
 
 export function Footer() {
   return (

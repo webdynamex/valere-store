@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, Instagram, MoveUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight, MoveUpRight } from "lucide-react";
+import { Instagram } from "@/components/instagram-icon";
 import { ProductSection } from "@/components/product-section";
 
 const HERO_IMAGE = "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=1600&q=90";
