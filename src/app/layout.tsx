@@ -1,17 +1,22 @@
 import type { Metadata } from "next";
-import { Montserrat } from "next/font/google";
+import { Prata, Manrope } from "next/font/google";
 import "./globals.css";
 import { StoreProvider } from "@/context/store-context";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { CartDrawer } from "@/components/cart-drawer";
 
-const siteFont = Montserrat({
+const displayFont = Prata({
   subsets: ["latin", "cyrillic"],
+  weight: "400",
+  variable: "--font-valere-display",
   display: "swap",
-  variable: "--font-valere",
-  weight: ["300", "400", "500", "600", "700"],
-  style: ["normal", "italic"],
+});
+
+const bodyFont = Manrope({
+  subsets: ["latin", "cyrillic"],
+  variable: "--font-valere-body",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -21,5 +26,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="bg"><body className={siteFont.variable}><StoreProvider><Header/><main className="min-h-[50vh]">{children}</main><Footer/><CartDrawer/></StoreProvider></body></html>;
+  return <html lang="bg"><body className={`${displayFont.variable} ${bodyFont.variable}`}><StoreProvider><Header/><main className="min-h-[50vh]">{children}</main><Footer/><CartDrawer/></StoreProvider></body></html>;
 }

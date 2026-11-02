@@ -5,15 +5,11 @@
   --ink: #262522;
   --muted: #736d67;
   --border: #e3ded8;
-  --font-valere-body: var(--font-valere), Arial, sans-serif;
-  --font-valere-display: var(--font-valere), Arial, sans-serif;
-  --font-sans: var(--font-valere), Arial, sans-serif;
-  --font-serif: var(--font-valere), Arial, sans-serif;
 }
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-valere-body); font-weight: 400; letter-spacing: -.015em; -webkit-font-smoothing: antialiased; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-valere-body), "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; }
 ::selection { background: #d8c9b9; color: #262522; }
 a, button, input, select, textarea { -webkit-tap-highlight-color: transparent; }
 button, select { cursor: pointer; }
@@ -24,15 +20,15 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 @media (min-width: 640px) { .section-wrap { padding-left: 44px; padding-right: 44px; } }
 @media (min-width: 1024px) { .section-wrap { padding-left: 64px; padding-right: 64px; } }
 
-.display-serif { font-family: var(--font-valere-display); font-weight: 300; letter-spacing: -.059em; }
-.brand-wordmark { font-family: var(--font-valere-display); font-size: clamp(1.7rem, 3vw, 2.3rem); font-weight: 500; letter-spacing: .2em; line-height: 1.15; white-space: nowrap; }
+.display-serif { font-family: var(--font-valere-display), Georgia, serif; font-weight: 400; letter-spacing: -.034em; }
+.brand-wordmark { font-family: var(--font-valere-body), Arial, sans-serif; font-size: clamp(1.7rem, 3vw, 2.3rem); font-weight: 500; letter-spacing: .19em; line-height: 1.15; white-space: nowrap; }
 .brand-wordmark--menu { font-size: 1.85rem; }
 .brand-wordmark--footer { font-size: clamp(2.1rem, 4vw, 3rem); }
 @media (max-width: 360px) { .brand-wordmark { font-size: 1.62rem; letter-spacing: .15em; } }
-.display-serif em { font-weight: 300; font-style: italic; }
-.font-serif { font-family: var(--font-valere-display); font-weight: 400; }
-.eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; }
-.nav-link { position: relative; display: inline-block; font-size: 11px; font-weight: 500; letter-spacing: .125em; color: #3b3935; transition: opacity .18s; }
+.display-serif em { font-weight: 400; font-style: italic; }
+.font-serif { font-family: var(--font-valere-display), "Iowan Old Style", Georgia, serif; }
+.eyebrow { font-size: 11px; font-weight: 500; letter-spacing: .21em; text-transform: uppercase; }
+.nav-link { position: relative; display: inline-block; font-size: 10px; letter-spacing: .14em; color: #3b3935; transition: opacity .18s; }
 .nav-link:hover { opacity: .5; }
 .nav-link::after { content: ""; position: absolute; left: 0; right: 100%; bottom: -7px; height: 1px; background: #262522; transition: right .25s; }
 .nav-link:hover::after { right: 0; }
@@ -42,7 +38,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .btn-outline { display: inline-flex; align-items: center; justify-content: space-between; gap: 15px; min-height: 49px; border: 1px solid #3c3732; padding: 14px 23px; background: transparent; font-size: 11px; font-weight: 500; letter-spacing: .1em; transition: background .22s, color .22s; }
 .btn-outline:hover { background: #262522; color: #fff; }
 .product-chip { display: inline-flex; width: max-content; align-items: center; background: #faf8f4; padding: 8px 10px; font-size: 9px; letter-spacing: .1em; }
-.filter-link { position: relative; padding-bottom: 3px; color: #756e68; font-size: 12px; letter-spacing: .03em; transition: color .2s; }
+.filter-link { position: relative; padding-bottom: 3px; color: #756e68; font-size: 11px; letter-spacing: .09em; transition: color .2s; }
 .filter-link.active, .filter-link:hover { color: #24211f; }
 .filter-link.active::after { position: absolute; right: 0; bottom: -25px; left: 0; height: 2px; background: #262522; content: ""; }
 .field-label { display: flex; flex-direction: column; gap: 10px; color: #514d47; font-size: 12px; letter-spacing: .01em; }
