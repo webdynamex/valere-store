@@ -1,29 +1,61 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
     function isAdmin() {
-      return request.auth != null &&
-        exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+      return signedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
+    function isSelf(uid) { return signedIn() && request.auth.uid == uid; }
 
     match /products/{productId} {
       allow get, list: if isAdmin() || resource.data.status == 'published';
       allow create, update, delete: if isAdmin();
     }
 
+    // Category and collection descriptions are storefront metadata; unpublished
+    // items are filtered by the storefront itself. They contain no private data.
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+    match /collections/{collectionId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+    match /storefront/{documentId} {
+      allow read: if documentId == 'home';
+      allow create, update, delete: if isAdmin() && documentId == 'home';
+    }
+    match /settings/{documentId} {
+      allow read: if documentId == 'shipping';
+      allow create, update, delete: if isAdmin() && documentId == 'shipping';
+    }
+
+    match /customers/{customerId} {
+      allow read: if isAdmin() || isSelf(customerId);
+      allow create: if isSelf(customerId)
+        && request.resource.data.keys().hasOnly(['displayName', 'email', 'phone', 'city', 'address', 'createdAt'])
+        && request.resource.data.email == request.auth.token.email;
+      allow update: if isAdmin() || (isSelf(customerId)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['displayName', 'phone', 'city', 'address', 'updatedAt'])
+        && request.resource.data.email == resource.data.email);
+      allow delete: if isAdmin();
+    }
+    match /customerPrivate/{customerId} {
+      allow read, write: if isAdmin();
+    }
+
     match /orders/{orderId} {
-      // Customer checkout uses a validated server endpoint with Admin SDK.
+      // Customer checkout goes through a verified server endpoint.
       allow create, delete: if false;
-      allow read, update: if isAdmin();
+      allow read: if isAdmin() || (signedIn() && ('customerUid' in resource.data) && resource.data.customerUid == request.auth.uid);
+      allow update: if isAdmin();
     }
 
     match /admins/{userId} {
-      allow get: if request.auth != null && request.auth.uid == userId;
+      allow get: if isSelf(userId);
       allow list, create, update, delete: if false;
     }
-
-    match /{document=**} {
-      allow read, write: if false;
-    }
+    match /{document=**} { allow read, write: if false; }
   }
 }

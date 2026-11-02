@@ -1,4 +1,4 @@
-export type Category = "clothing" | "corsets" | "accessories" | "eyewear";
+export type Category = string;
 export type ProductStatus = "draft" | "published";
 
 export type Variant = {
@@ -60,5 +60,6 @@ export type Order = {
   subtotalCents: number;
   shippingCents: number | null;
   status: OrderStatus;
+  customerUid?: string;
   createdAt?: unknown;
 };

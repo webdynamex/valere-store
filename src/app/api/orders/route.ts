@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { FieldValue } from "firebase-admin/firestore";
-import { getAdminDb } from "@/lib/firebase-admin";
+import { getAdminAuth, getAdminDb } from "@/lib/firebase-admin";
 import type { Product, Variant } from "@/types/store";
 
 export const runtime = "nodejs";
@@ -38,6 +38,18 @@ export async function POST(request: NextRequest) {
   if (!/^[+\d()\-\s]{7,30}$/.test(customer.phone)) return failed("Невалиден телефон.");
   const delivery = payload.delivery === "speedy" ? "speedy" : payload.delivery === "econt" ? "econt" : null;
   if (!delivery || payload.payment !== "cod") return failed("Невалидна доставка или плащане.");
+  // Link history only after verifying Firebase Auth identity, never by an email supplied in JSON.
+  let customerUid: string | null = null;
+  const authorization = request.headers.get("authorization");
+  if (authorization) {
+    const bearer = /^Bearer ([\w.-]+)$/.exec(authorization);
+    if (!bearer) return failed("Невалидна сесия на клиента.", 401);
+    try {
+      const decoded = await getAdminAuth()?.verifyIdToken(bearer[1], true);
+      if (!decoded || !decoded.email || decoded.email.toLowerCase() !== customer.email) return failed("Имейлът на поръчката трябва да съвпада с клиентския профил.", 403);
+      customerUid = decoded.uid;
+    } catch { return failed("Клиентската сесия е изтекла. Влезте отново.", 401); }
+  }
   if (!Array.isArray(payload.lines) || payload.lines.length < 1 || payload.lines.length > 15) return failed("Добавете валидни продукти.");
   const rawLines: RawLine[] = [];
   const used = new Set<string>();
@@ -61,6 +73,7 @@ export async function POST(request: NextRequest) {
       const refs = [...byProduct.keys()].map((id) => db.collection("products").doc(id));
       // ALL reads happen before any transaction writes.
       const snapshots = await Promise.all(refs.map((ref) => tx.get(ref)));
+      const shippingSnap = await tx.get(db.collection("settings").doc("shipping"));
       const updates: Array<{ ref: (typeof refs)[number]; variants: Variant[] }> = [];
       const orderLines: Array<Record<string, string | number>> = [];
       let subtotalCents = 0;
@@ -80,10 +93,16 @@ export async function POST(request: NextRequest) {
         updates.push({ ref: refs[i], variants });
       }
       if (subtotalCents > 1_000_000_00) throw new Error("Твърде голяма поръчка.");
+      const shipping = shippingSnap.exists ? shippingSnap.data() : null;
+      const price = delivery === "speedy" ? shipping?.speedyCents : shipping?.econtCents;
+      const freeAbove = shipping?.freeAboveCents;
+      const shippingCents = shipping?.enabled && Number.isSafeInteger(price) && price >= 0
+        ? (Number.isSafeInteger(freeAbove) && freeAbove > 0 && subtotalCents >= freeAbove ? 0 : price as number)
+        : null;
       for (const update of updates) tx.update(update.ref, { variants: update.variants, updatedAt: FieldValue.serverTimestamp() });
       tx.create(orderRef, {
-        customer, delivery, payment: "cod", lines: orderLines,
-        subtotalCents, shippingCents: null, status: "new",
+        customer, ...(customerUid ? { customerUid } : {}), delivery, payment: "cod", lines: orderLines,
+        subtotalCents, shippingCents, status: "new",
         createdAt: FieldValue.serverTimestamp(), source: "web",
       });
       return { orderId: orderRef.id };

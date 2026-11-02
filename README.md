@@ -125,3 +125,24 @@ npm run typecheck
 npm run lint
 npm run build
 ```
+
+## Backoffice phase 1 (categories, collections, storefront, customers)
+
+The admin at `/admin` now includes Overview, Products, Categories, Collections, Orders, Customers, Homepage, Shipping and Analytics. Existing admin login and product management are retained. Public shop categories, editorial sections and homepage product selections subscribe to Firestore.
+
+**Important: after deploying this update, publish the latest `firestore.rules` AND `storage.rules` in the VALÉRE Firebase project.** The Vercel/GitHub deployment cannot deploy these Firebase rules by itself. Until you publish them, new collections, customer profiles, homepage settings and editorial photo uploads will fail with permission errors. The Storage rules require the Firebase Storage service account to have the cross-service IAM permission for Firestore `exists()` checks.
+
+New Firestore paths:
+- `categories/{slug}` – configurable category names/order/visibility; built-in categories appear until overridden
+- `collections/{slug}` – editable title, image, products and published status
+- `storefront/home` – homepage hero, story, curated product IDs and selected collections
+- `settings/shipping` – admin-defined display rates for Econt/Speedy and free-shipping threshold, initially not enabled
+- `customers/{uid}` – customer profile created on registration; read/update restricted to owner and admins
+- `customerPrivate/{uid}` – private staff notes, accessible only to admins
+- `orders/{orderId}` – server-created orders; authenticated customers may read only orders linked to their verified UID; admins see all
+
+Customers can register and sign in at `/account`, edit their own contact information and review **new orders associated with a verified Firebase Auth ID token**. Guest checkouts and historical guest purchases cannot be automatically claimed by email. Email addresses cannot be used to impersonate customers. Order creation is still DISABLED until legal pages, shipping fulfilment and payments/notifications are operational. The admin can record manual shipping rates but these are informational previews, not carrier API quotes.
+
+Set up Firebase Authentication → Email/Password and add `valere-store.vercel.app` in **Authentication → Settings → Authorized domains** if it is not already present. For any new admin, add `admins/{authUid}` manually via Firebase Console; users cannot grant themselves admin access. Never put Firebase service account private keys in the browser or GitHub repository.
+
+Not yet implemented in this phase: staff invitations/multiple admin roles, discount redemption, carrier-label integrations and live delivery quotes, refunds, transactional emails, legal-policy content and publishing, card payments, verified payment reports, customer data export/deletion workflow, audit logs and production-grade fraud controls. The customer login and admin tabs are a functional foundation, not a promise that live checkout is ready.

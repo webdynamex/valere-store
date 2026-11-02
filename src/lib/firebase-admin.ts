@@ -1,6 +1,7 @@
 import "server-only";
 import { cert, getApps, initializeApp } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
+import { getAuth } from "firebase-admin/auth";
 
 export function getAdminDb() {
   const projectId = process.env.FIREBASE_PROJECT_ID;
@@ -13,4 +14,9 @@ export function getAdminDb() {
   }, "valere-admin");
 
   return getFirestore(app);
+}
+
+export function getAdminAuth() {
+  const app = getApps().find((item) => item.name === "valere-admin");
+  return app ? getAuth(app) : null;
 }
